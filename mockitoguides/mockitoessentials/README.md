@@ -179,11 +179,92 @@ object is not used in the Teacher class or test method, but it is necessary for
 the Marks object
 ```
 
+## working with stubs
+- delivers indirect inputs to the caller when the stub's methods are called
+-  Stubs are programmed only for the test scope
+-  Stubs may record other information such as
+   how many times they are invoked and so on
+- think of scenarios that are not easy to imitate
+  - subs helps use to simulate these conditions
+-  Stubs can also be programmed to return a
+   hardcoded result
+- e.g.  demonstrate stubbing
+
+```text
+
+- The service implementation class
+  delegates the Students Object Creation Task
+  to the StudentDAO object
+  
+ - If anything 
+goes wrong in the data access layer, then the DAO throws an 
+SQLException error
+
+- The implementation class catches the 
+exceptions and sets the error message to the response object.
+
+```
+
+- now the question is 
+  - How can you test the SQLException condition?
+    - Create a stub object
+      and throw an exception
+    - Whenever the create method is invoked
+      on the stubbed DAO, the DAO throws an exception
+
+```text
+
+The following 
+ConnectionTimedOutStudentDAOStub class implements the StudentDAO
+interface and throws an SQLException error from the create() method
+```
+
+```java
+public class ConnectionTimedOutStudentDAOStub implements StudentDAO{
+    @Override
+    public String create(String name, String className) throws SQLException {
+        throw new SQLException("DB Connection timed out");
+    }
+}
+```
+
+-  Test the SQLException condition
+
+```java
+@Test
+void  when_connection_times_out_then_the_student_is_not_saved() {
+    studentService = new StudentServiceImpl(
+            new ConnectionTimedOutStudentDAOStub()
+    );
+    String classNine = "IX";
+    String johnSmith = "john Smith";
+    CreateStudentResponse response = studentService.create(johnSmith, classNine);
+    assertFalse(response.isSuccess());
+}
+```
+
+- what have we done here
+
+```text
+The error condition is stubbed and passed into the service implementation 
+object.
+
+When the service implementation invokes the create() method on 
+the stubbed DAO, it throws an SQLException error.
+
+```
+
+- Stubs are very handy to impersonate error conditions and external dependencies
+  - (you can achieve the same thing with a mock; this is just one approach)
 
 
+```text
+Suppose 
+you need to test a code that looks up a JNDI resource and asks the resource to return 
+some value. You cannot look up a JNDI resource from a JUnit test; you can stub the 
+JNDI lookup code and return a stubbed object that will give you a hardcoded value.
 
-
-
+```
 
 
 
