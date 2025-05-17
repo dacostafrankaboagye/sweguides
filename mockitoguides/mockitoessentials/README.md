@@ -53,13 +53,13 @@ of collaborator
 Addison-Wesley—this book explores the various test doubles and sets the foundation
 for Mockito.
 
-- we create test doubles to impersonate collaborators
+- we create `test doubles` to impersonate collaborators
 - Types
-  - Dummy
-  - Stub
-  - Mock
-  - Fake
-  - Spy
+  - `Dummy`
+  - `Stub`
+  - `Mock`
+  - `Fake`
+  - `Spy`
 
 ## using dummy objects
 - [./src/main/java/org/example/chap1/testdoubles/dummy](./src/main/java/org/example/chap1/testdoubles/dummy)
@@ -265,6 +265,109 @@ some value. You cannot look up a JNDI resource from a JUnit test; you can stub t
 JNDI lookup code and return a stubbed object that will give you a hardcoded value.
 
 ```
+
+## Exploring a test spy
+- a spy object spies on real object
+```test
+
+ A spy is a variation of a stub, but 
+instead of only setting the expectation, a spy records the method calls made to the 
+collaborator. A spy can act as an indirect output of the unit under test and can also 
+act as an audit log
+```
+- e.g.
+- [./src/main/java/org/example/chap1/testdoubles/spy](./src/main/java/org/example/chap1/testdoubles/spy)
+
+```text
+
+The StudentService class contains a map of the course names and students. 
+The enrollToCourse method looks up the map; if no student is enrolled, 
+then it creates a collection of students, adds the student to the collection, and 
+puts the collection back in the map. If a student has previously enrolled for 
+the course, then the map already contains a Student collection. So, it just 
+adds the new student to the collection.students list.
+```
+```java
+public class StudentService {
+    private Map<String, List<Student>> studentCouseMap = new HashMap<>();  // course-name : list of students
+    public void enrollToCourse(String studentName, Student student){
+        List<Student> list = studentCouseMap.get(studentName);
+        if(list == null){
+            list = new ArrayList<>();
+        }
+        if(!list.contains(student)){
+            list.add(student);
+        }
+        studentCouseMap.put(studentName, list);
+    }
+}
+
+```
+
+```text
+
+- The enrollToCourse method is a void method and doesn't return a
+response. To verify that the enrollToCourse method was invoked with a 
+specific set of parameters, we can create a spy object. 
+
+- The service will write to 
+the spy log, and the spy will act as an indirect output for verification
+
+- Create 
+a spy object to register method invocations
+```
+
+- - [./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java](./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java)
+
+```text
+
+The MethodInvocation class represents a method invocation: the method 
+name, a parameter list, and a return value. Suppose a sum() method is 
+invoked with two numbers and the method returns the sum of two numbers, 
+then the MethodInvocation class will contain a method name as sum, a 
+parameter list that will include the two numbers, and a return value that 
+will contain the sum of the two numbers.
+```
+
+- The following is the spy object snippet. It has a registerCall
+  method to log a method call instance
+
+```text
+ Modify the StudentService class to set a spy and log every method 
+invocation to the spy object:
+
+
+```
+
+- [./src/main/java/org/example/chap1/testdoubles/spy/StudentService.java](./src/main/java/org/example/chap1/testdoubles/spy/StudentService.java)
+
+```text
+
+ a test to examine the method invocation and arguments. The following 
+JUnit test uses the spy object and verifies the method invocation
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
