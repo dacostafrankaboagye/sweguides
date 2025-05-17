@@ -1,0 +1,202 @@
+- By
+  - Sujoy Acharya
+
+
+# Chap 1 - Exploring Test Doubles
+-  Automated unit tests provide an
+   extremely effective mechanism for catching regressions, especially when combined
+   with test-driven development; it creates a test safety net for the developers.
+
+## working with unit test
+- A common understanding of unit testing is the testing of the smallest possible part of
+software, such as a single method, a small set of related methods, or a class. 
+- In reality, we do not test methods; we test a logical unit and its behavior instead.
+- Benefits of Test Automation
+    - The side effects of code changes are detected immediately
+    - Saves time; no need for immediate regression testing
+      -  Manual regression testing is
+         tedious and time-consuming, but if you have an automated unit test suite,
+         then you can delay the regression testing until the functionality is done.
+- Characteristics of a unit test
+  - should have a fast test execution
+  - A test should not depend on the result of another test or rather test
+    execution order
+    - Unit test frameworks can execute tests in any order
+  - should not depend on database access, file access, or any long running task.
+  - should be readable and expressive
+- Note
+  - You cannot automate a unit test if your API class depends on slow external entities,
+    such as data access objects or JNDI lookup. Then, you need test doubles to isolate the
+    external dependencies and automate the unit test
+
+## Understanding test doubles
+```text
+We all know about stunt doubles in movies. A stunt double or dummy is a trained 
+replacement used for dangerous action sequences in movies, such as a fight sequence 
+on the top of a burning train, jumping from an airplane, and so on, mainly fight 
+scenes. Stunt doubles are used to protect the real actors, are used when the actor is 
+not available, or when the actor has a contract to not get involved in stunts.
+Similarly, sometimes it is not possible to unit test the code because of the 
+unavailability of the collaborator objects, or the cost of interaction and instantiation 
+of collaborator
+```
+-  For instance, when the code is dependent on database access, it is
+   not possible to unit test the code unless the database is available, or 
+- when a piece of
+   code needs to send information to a printer and the machine is not connected to a
+   LAN
+-  The primary reason for using doubles is to isolate the unit you are testing
+   from the external dependencies
+- Test doubles act as stunt doubles
+
+> Gerard Meszaros coined the term test doubles in his book xUNIT TEST PATTERNS,
+Addison-Wesley—this book explores the various test doubles and sets the foundation
+for Mockito.
+
+- we create test doubles to impersonate collaborators
+- Types
+  - Dummy
+  - Stub
+  - Mock
+  - Fake
+  - Spy
+
+## using dummy objects
+- [./src/main/java/org/example/chap1/testdoubles/dummy](./src/main/java/org/example/chap1/testdoubles/dummy)
+
+```text
+In movies, sometimes a double doesn't perform anything; they just appear on the 
+screen. One such instance would be standing in a crowded place where the real actor 
+cannot go
+```
+- Likewise a dummy object is passed as a mandatory parameter object
+
+```text
+A dummy 
+object is not directly used in the test or code under test, but it is required for the 
+creation of another object required in the code under test
+
+```
+- the usage of dummy objects
+
+```text
+We'll create an examination grade system. The program will analyze the 
+aggregate of all the subjects and determine the grade of a student
+
+```
+
+
+```java
+public class Student {
+    private final String name;
+    private final String roleNumber;
+    public Student(String name, String roleNumber) {
+        this.name = name;
+        this.roleNumber = roleNumber;
+    }
+    // ...
+}
+public class Marks {
+    private final Student student;
+    private final String subjectId;
+    private final BigDecimal marks;
+    public Marks(Student student, String subjectId, BigDecimal marks) {
+        this.student = student;
+        this.subjectId = subjectId;
+        this.marks = marks;
+    }
+    // ...
+}
+
+
+```
+- Note that the Marks constructor accepts a Student object to represent the marks of a student. 
+- So, a Student object is needed to create a Marks object
+
+
+```java
+public class Marks {
+
+    private final Student student;
+    private final String subjectId;
+    private final BigDecimal marks;
+
+    public Marks(Student student, String subjectId, BigDecimal marks) {
+        this.student = student;
+        this.subjectId = subjectId;
+        this.marks = marks;
+    }
+    //...
+}
+
+public class Teacher {
+
+    private BigDecimal calculatePercentage(BigDecimal aggregate, int numberOfSubject){
+        //...
+    }
+
+    public Grades generateGrade(List<Marks> marksList){
+        //...
+    }
+}
+
+```
+
+- DummyStudent class and extend the Student
+- Note that the constructor passes NULL to the super constructor and 
+- throws a runtime exception from the getRoleNumber() and getName() methods
+
+```text
+
+Create a JUnit test to verify our assumption that when a student gets more 
+than 75 percent (but less than 90 percent) in aggregate, then the teacher 
+generates the grade as VeryGood, creates a DummyStudent object, and passes 
+it as Student to the Marks constructor
+```
+- [./src/test/java/org/example/chap1/testdoubles/dummy/TeacherTest.java](./src/test/java/org/example/chap1/testdoubles/dummy/TeacherTest.java)
+
+```java
+    @Test
+    void when_marks_above_75_returns_very_good() {
+        // Student is required for the creation of the marks
+        // that is where the dummy comes in
+        DummyStudent dummyStudent = new DummyStudent();
+        Marks inEnglish = new Marks(dummyStudent,//...);
+        Marks inMath = new Marks(dummyStudent,//...);
+        Marks inHistory = new Marks(dummyStudent,//...);
+        
+        //...
+    }
+
+```
+- Note
+
+```text
+
+Note that a DummyStudent object is created and passed to all the three Marks
+objects, as the Marks constructor needs a Student object. This dummyStudent
+object is not used in the Teacher class or test method, but it is necessary for 
+the Marks object
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Chap 2 - Socializing with Mockito
+# Chap 3 - Accelerating Mockito
+# Chap 4 - Behavior-Driven Development with Mockito
+# Chap 5 - Unit Testing the Legacy code with Mockito
+# Chap 6 - Developing SOA with Mockito
+# Chap 7 - Unit Testing GWT Code with Mockito
