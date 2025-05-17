@@ -316,8 +316,7 @@ the spy log, and the spy will act as an indirect output for verification
 - Create 
 a spy object to register method invocations
 ```
-
-- - [./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java](./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java)
+- [./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java](./src/main/java/org/example/chap1/testdoubles/spy/MethodInvocation.java)
 
 ```text
 
@@ -396,7 +395,73 @@ spy example
   verify the invocation and stub calls
 
 
+## Implementing fake objects – simulators
+- fake object is a test double with real logic (unlike stubs) and is much more
+simplified or cheaper in some way
+- We do not mock or stub a unit that we test;
+  rather, the external dependencies of the unit are mocked or stubbed so that the
+  output of the dependent objects can be controlled or observed from the tests. 
+- The fake object replaces the functionality of the real code that we want to test
+- Fakes are
+  also dependencies, and don't mock via subclassing (which is generally always a bad
+  idea; use composition instead)
+- they use some real logic
 
+```text
+
+classic example is to use a database stub that always returns a fixed value from
+        the DB, or a DB fake, which is an entirely in-memory nonpersistent database that's 
+otherwise fully functional
+```
+- now the question is: 
+  - Why should you test a behavior that is unreal? 
+    - Fake objects are extensively used in legacy code
+- reasons behind using fake objects
+
+```text
+-  The real object cannot be instantiated, such as when the constructor reads a 
+file, performs a JNDI lookup, and so on
+
+The real object has slow methods; for example, a class might have a 
+calculate () method that needs to be unit tested, but the calculate()
+method calls a load ()method to retrieve data from the database. The 
+load() method needs a real database, and it takes time to retrieve data, so 
+we need to bypass the load() method to unit test the calculate behavior
+```
+
+- e.g. -  demonstrating the utility of a fake object
+
+```text
+
+A data access object class will 
+take a list of students and loop through the student's objects; if roleNumber is null, 
+then it will insert/create a student, otherwise it will update the existing student's 
+information. 
+
+```
+- [./src/main/java/org/example/chap1/testdoubles/fake/JdbcSupport.java](./src/main/java/org/example/chap1/testdoubles/fake/JdbcSupport.java)
+
+
+```text
+
+Check whether the batchUpdate method takes an SQL string and a list
+of objects to be persisted. It returns an array of integers. Each array index
+contains either 0 or 1. If the value returned is 1, it means that the database
+update is successful, and 0 means there is no update. So, if we pass only
+one Student object to update and if the update succeeds, then the array
+will contain only one integer as 1; however, if it fails, then the array will
+contain 0.
+```
+
+- StudentDao interface for the Student data access,  an implementation of StudentDao.
+
+```java
+public interface StudentDAO {
+    void batchUpdate(List<Student> students);
+}
+
+
+```
 
 
 
