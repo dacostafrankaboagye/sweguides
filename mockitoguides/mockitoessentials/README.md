@@ -347,6 +347,53 @@ invocation to the spy object:
 JUnit test uses the spy object and verifies the method invocation
 ```
 
+## Getting started with mock objects
+- A mock object is a combination of a spy and a stub.
+-  It acts as an indirect output
+   for a code under test, such as a spy, and can also stub methods to return values or
+   throw exceptions, like a stub.
+-  A mock object fails a test if an expected method is not
+   invoked or if the parameters of the method don't match.
+
+- e.g. test failure scenario
+
+```text
+
+- we have a  StudentService
+class. This class will act as a course register service.
+
+-  Copy the StudentServiceSpy class and rename it as 
+StudentServiceMockObject. Add a new method to verify 
+the method invocations
+
+-  Modify the StudentService code to set the mock object, as we did in the 
+spy example
+
+- test to verify the method invocation
+```
+
+```java
+
+    @Test
+    void enrolls_students() {
+        // create 2 students
+        Student bob = new Student("Robert Anthony", "001");
+        Student roy = new Student("Roy Noon", "002");
+        // set mock/spy
+        service.setMock(mockObject);
+        // invoke service twice
+        service.enrollToCourse(bob, "english");
+        service.enrollToCourse(roy, "history");
+        // assert that the method was invoked twice
+        assertEquals(2, mockObject.invocation("enrollToCourse"));
+        // verify wrong information, that enrollToCourse was invoked once, but actually it was invoked twice
+        mockObject.verify("enrollToCourse", 1);  // this will fail for us to see
+
+    }
+```
+
+- The Mockito framework provides an API for mocking objects. It uses proxy objects to
+  verify the invocation and stub calls
 
 
 
