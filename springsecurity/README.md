@@ -441,3 +441,126 @@ Users
  - at the end of the day, it is still the same contract
    - GrantedAuthority
 ```
+
+
+## Lesson 3 - Custom authentication
+-  you wouldn't need to do this in real app
+- but its good to know whats behind the scenes
+- so the idea in this lesson
+  - we have a static key on the server side
+  - we want http to use that key to get authenticated 
+  - so we dont have users , we dont have passwords
+
+```text
+
+Http -> filter
+      -> Auth Filter (custom)
+      -> Auth Manager (custom)
+      -> Auth Provider (custom)
+      
+      ...// we have already done the part involving userdetailsservice and all that in the previous leesons
+      
+
+- The Cusotm Auth will rely on a key
+- The Authentication Mechanism  is this
+    - the request contains a header with the secret key
+   - if it does not contain it then the authentication fails
+```
+
+- Note
+```text
+
+.addFilterAt(<CustomFilter>, UsernamePasswordAuthenticationFilter.class)
+
+// This places your custom filter at the same position in the filter chain
+// where the UsernamePasswordAuthenticationFilter would normally be.
+// This is useful when you want to completely replace the default authentication
+// mechanism (like form login or HTTP Basic) with your own.
+
+```  
+
+- Note
+
+```text
+- Our MyCustomAuthenticationFilter should NOT implement the generic `Filter` interface directly,
+  because filters in the Spring Security filter chain are not guaranteed to be called only once per request.
+
+- Instead, your custom filter should EXTEND `OncePerRequestFilter`,
+  which ensures the filter is invoked only once per request within a single request dispatch cycle
+  (avoiding issues with forwards, includes, or other dispatch types).
+
+- To implement your custom logic, override the `doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)` method.
+
+```
+
+- lets secure all the endpoint to test it
+
+
+```java
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .addFilterAt(myCustomAuthenticationFilter , UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> {
+                    auth.anyRequest().authenticated();
+                })
+                .build();
+
+    }
+
+```
+
+- let move to the auth manager
+
+```text
+
+MyCustomAuthenticationManager implements the AuthenticationManager
+ - so we override the authenticate method which return the type `Authentication`
+
+- so we create the MyCustomAuthentication which implements the Authentication
+- this is how it looks
+```
+
+```java
+
+
+public class MyCustomAuthentication implements Authentication {
+  @Override public Collection<? extends GrantedAuthority> getAuthorities() {}
+  @Override public Object getCredentials() {  //.. }
+  @Override public Object getDetails() {  //.. }
+  @Override public Object getPrincipal() {  //.. }
+  @Override public boolean isAuthenticated() {  //.. }
+  @Override public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {  //.. }
+  @Override public String getName() {  //..  }
+  @Override public boolean implies(Subject subject) {  //... }
+}
+
+```
+
+- there are some methods here that are questionable
+- becuse for Authentication
+  - we dont know yet if we have a principal? - so why the getPrincipal
+  - there are somethings that should have been segregated
+
+- the ones which is useful and particular in our case (we dont even have users)
+  - our athentication simply implies you to have a key
+
+```java
+
+  @Override public boolean isAuthenticated() {  //.. }
+  @Override public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {  //.. }
+
+```
+
+- let move to the provider
+
+```text
+MyCustomAuthenticationProvider implements the AuthenticationProvider
+```
+
+- testing with postman
+
+```text
+
+- we put the `my-cus-key` in the header
+```
