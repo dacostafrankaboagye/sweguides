@@ -392,5 +392,30 @@ SecurityContextPersistenceFilter
 - mysql dependency, datajpa, security, web
 - create a schema `ss_lesson2`
 - table myusers: username, password, id
+- create some users in the db
+    - ` 1   bill   12345`  <id, username, password>
+
+```
+
+- what is the idea here?
+  - we want to implement our own userdetailsservice
+  - which we are going to get the unique user from the db
+  
+
+- for userdetails
+  - we will create a wrapper around the MyUser
+  - we would not implement it directly in the class
+
+- Note
+  - `MyUsersJpaUserDetailsService`  -- implements `UserDetailsService`
+    - we override the `loadUserByUsername` which return `UserDetails`
+    - so we create our `MyWrapperUserDetails`  -- implement the UserDetails
+      - where are the user details coming from?
+        - from the `MyUsersRepository`  which uses `MyUser` from my db
+
+```text
+so we use postman to verify
+- use basic auth and prodvide te credentials 
+    in the db already
 
 ```
