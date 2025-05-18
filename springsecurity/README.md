@@ -162,3 +162,74 @@ public interface UserDetails extends Serializable {
   - you can choose an implementation of it
 
 ![./images/udsImplementation.png](./images/udsImplementation.png)
+
+
+- to provide our own credentials, lets use the simplest one - `InMemoryUserDetailsManager`
+
+- this is how the `InMemoryUserDetailsManager` looks like
+
+```java
+
+public class InMemoryUserDetailsManager implements UserDetailsManager, UserDetailsPasswordService {
+    // ...
+    public InMemoryUserDetailsManager() {}
+    public InMemoryUserDetailsManager(Collection<UserDetails> users) {         //..     }
+    public InMemoryUserDetailsManager(UserDetails... users) {         //..     }
+    public InMemoryUserDetailsManager(Properties users) {         //..     }
+    private User createUserDetails(String name, UserAttribute attr) {         //..     }
+    public void createUser(UserDetails user) {          // ..           }
+    public void deleteUser(String username) {         // ..     }
+    public void updateUser(UserDetails user) {         // ..     }
+    public boolean userExists(String username) {  // ..    }
+    public void changePassword(String oldPassword, String newPassword) {         // ..     }
+    public UserDetails updatePassword(UserDetails user, String newPassword) {         // ..     }
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {         // ..     }
+    public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy securityContextHolderStrategy) {         // ...     }
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {         // ..    }
+}
+
+```
+
+
+- so lets set it up
+```text
+- it mandatory that, the have an authority (role, action)
+- Spring Security requires roles to be prefixed with "ROLE_" when using SimpleGrantedAuthority.
+
+```
+- the `GrantedAuthority` is a contract so here are some implementation
+
+![./images/grantedAuthImpl.png](./images/grantedAuthImpl.png)
+
+```text
+For the Authorities
+
+✅ You want to allow duplicates and preserve order  ==== 	List / ArrayList (commonly used)
+✅ You want to avoid duplicates	 ==== Set / HashSet
+✅ You need fast insert/remove at both ends	 ==== LinkedList
+
+
+
+```
+
+- for password encoder
+
+| Implementation          | Description                                 |
+| ----------------------- | ------------------------------------------- |
+| `NoOpPasswordEncoder`   | No encoding (`{noop}` is shortcut for this) |
+| `BCryptPasswordEncoder` | Strong hashing algorithm, **recommended**   |
+| `Pbkdf2PasswordEncoder` | Key derivation based, secure                |
+| `Argon2PasswordEncoder` | New and very secure, slower                 |
+| `SCryptPasswordEncoder` | Secure, used in high-security environments  |
+
+- take a look at the Config
+[./src/main/java/org/example/springsecurity/config/WebSecurityConfig.java](./src/main/java/org/example/springsecurity/config/WebSecurityConfig.java)
+
+- Test with postman
+```text
+so now we can test with postman
+basic auth
+    - with the username and password 
+```
+
+![./images/highlevel.png](./images/highlevel.png)
