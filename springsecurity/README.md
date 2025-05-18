@@ -233,3 +233,157 @@ basic auth
 ```
 
 ![./images/highlevel.png](./images/highlevel.png)
+
+
+## Lesson 2 - Managing users
+- 
+- Spring security in a web application starts from the filters
+```text
+
+HTTP Request
+    ↓
+Filter Chain (SecurityFilterChain)
+    ↓
+[Authentication Filters]
+    ├─ UsernamePasswordAuthenticationFilter       ← for form login / HTTP Basic
+    ├─ BearerTokenAuthenticationFilter            ← for JWT tokens (OAuth2 Resource Server)
+    ├─ OAuth2LoginAuthenticationFilter            ← for OAuth2 logins (e.g., Google)
+    ├─ Saml2WebSsoAuthenticationFilter            ← for SAML
+    ├─ AbstractPreAuthenticatedProcessingFilter   ← for API Gateway or reverse proxy auth
+    ↓
+AuthenticationManager (usually only one)
+    ↓
+[AuthenticationProviders] (multiple can be configured)
+    ├─ DaoAuthenticationProvider                  ← checks username/password via UserDetailsService
+    ├─ JwtAuthenticationProvider                  ← verifies JWT and extracts user info
+    ├─ LdapAuthenticationProvider                 ← authenticates via LDAP
+    ├─ OAuth2LoginAuthenticationProvider          ← handles OAuth2 login
+    ├─ PreAuthenticatedAuthenticationProvider     ← assumes user is pre-authenticated
+    ├─ RememberMeAuthenticationProvider           ← auto-logins using remember-me cookie
+    └─ CustomAuthenticationProvider               ← custom logic (e.g., API keys, SMS codes)
+    ↓
+SecurityContextHolder
+    ↓
+Controller (if authentication succeeds)
+
+```
+
+```text
+
+HTTP Request
+    ↓
+Filter Chain (SecurityFilterChain)
+    ↓
+[Authentication Filters]
+    ├─ UsernamePasswordAuthenticationFilter
+    │     ↓
+    │     AuthenticationManager
+    │         ↓
+    │         DaoAuthenticationProvider
+    │             ├─ UserDetailsService      ← loads user from DB or memory
+    │             └─ PasswordEncoder         ← matches raw password with encoded
+    │
+    ├─ BearerTokenAuthenticationFilter
+    │     ↓
+    │     AuthenticationManager
+    │         ↓
+    │         JwtAuthenticationProvider
+    │             └─ JWT Decoder / Verifier  ← validates signature, extracts claims
+    │
+    ├─ OAuth2LoginAuthenticationFilter
+    │     ↓
+    │     AuthenticationManager
+    │         ↓
+    │         OAuth2LoginAuthenticationProvider
+    │             └─ OAuth2UserService       ← loads user info from provider (e.g., Google)
+    │
+    ├─ Saml2WebSsoAuthenticationFilter
+    │     ↓
+    │     AuthenticationManager
+    │         ↓
+    │         Saml2AuthenticationProvider
+    │             └─ SAML Assertion Validator
+    │
+    ├─ AbstractPreAuthenticatedProcessingFilter
+    │     ↓
+    │     AuthenticationManager
+    │         ↓
+    │         PreAuthenticatedAuthenticationProvider
+    │             └─ Authentication extracted from headers/token by gateway
+    │
+    └─ RememberMeAuthenticationFilter
+          ↓
+          RememberMeAuthenticationProvider
+              └─ Uses token in cookie to restore session
+              
+    ↓
+SecurityContextHolder
+    ↓
+Controller / @PreAuthorize / @Secured
+
+
+```
+
+
+```text
+HTTP Request
+    ↓
+Security Filter Chain
+    ↓
+├── SecurityContextPersistenceFilter
+│     ↳ Loads SecurityContext from session (if available)
+├── CsrfFilter (Optional)
+│     ↳ Validates CSRF token for modifying requests (POST/PUT/DELETE)
+├── LogoutFilter (Optional)
+│     ↳ Intercepts logout URL and clears authentication/session
+├── UsernamePasswordAuthenticationFilter (Form Login)
+│     ↳ Extracts username & password → AuthenticationManager.authenticate()
+│           ↓
+│     AuthenticationManager
+│           ↓
+│     AuthenticationProvider(s) (e.g., DaoAuthenticationProvider)
+│           ↓
+│     UserDetailsService
+│           ↓
+│     Load user by username + check password (with PasswordEncoder)
+│           ↓
+│     On success: return authenticated Authentication
+│           ↓
+│     Store in SecurityContextHolder
+│           ↓
+│     Save SecurityContext to session (handled later by SecurityContextPersistenceFilter)
+├── BasicAuthenticationFilter (Optional)
+│     ↳ Processes HTTP Basic credentials if present
+├── BearerTokenAuthenticationFilter (Optional for JWT)
+│     ↳ Extracts JWT token → AuthManager.authenticate()
+│           ↓
+│     JwtAuthenticationProvider
+│           ↓
+│     Validates token + loads user details
+│           ↓
+│     Sets Authentication in SecurityContextHolder
+├── ExceptionTranslationFilter
+│     ↳ Catches access/auth exceptions → redirects or returns error
+├── FilterSecurityInterceptor
+│     ↳ Checks authorization (hasRole, hasAuthority, etc.)
+│         ↓
+│     AccessDecisionManager
+│         ↓
+│     Based on SecurityContext's Authentication and config
+
+→ Proceed to Controller if authorized
+
+Controller Layer
+    ↓
+Business Logic
+
+HTTP Response
+    ↑
+SecurityContextPersistenceFilter
+    ↳ Saves SecurityContext back to session (on response)
+```
+
+### Defining our own UserDetailsService
+- we will be creating our own userdetailsservice
+- store the users
+- for simplicity—other things like roles, authorities, password wont be stored
