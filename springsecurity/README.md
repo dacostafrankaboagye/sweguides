@@ -419,3 +419,25 @@ so we use postman to verify
     in the db already
 
 ```
+
+-  we can add Granted Authorities instead of hardcoding
+
+```text
+Users
+    -> Granted Authorities (can be represented as)
+        -> Authorities or
+        -> Roles
+        
+ - it is only a conceptual difference
+    - Authority - action
+    - Role - like a badge
+        
+ - see this
+        new SimpleGrantedAuthority("ROLE_ADMIN"),    // role
+        new SimpleGrantedAuthority("READ_PRIVILEGE"), // authority
+        new SimpleGrantedAuthority("WRITE_PRIVILEGE") // authority
+        
+        
+ - at the end of the day, it is still the same contract
+   - GrantedAuthority
+```
