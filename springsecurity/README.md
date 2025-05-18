@@ -223,7 +223,7 @@ For the Authorities
 | `SCryptPasswordEncoder` | Secure, used in high-security environments  |
 
 - take a look at the Config
-[./src/main/java/org/example/springsecurity/config/WebSecurityConfig.java](./src/main/java/org/example/springsecurity/config/WebSecurityConfig.java)
+[src/main/java/org/example/springsecurity/lesson1/config/WebSecurityConfig.java](src/main/java/org/example/springsecurity/lesson1/config/WebSecurityConfig.java)
 
 - Test with postman
 ```text
@@ -387,3 +387,10 @@ SecurityContextPersistenceFilter
 - we will be creating our own userdetailsservice
 - store the users
 - for simplicity—other things like roles, authorities, password wont be stored
+```text
+- using sql
+- mysql dependency, datajpa, security, web
+- create a schema `ss_lesson2`
+- table myusers: username, password, id
+
+```
