@@ -111,3 +111,51 @@
     |------------------------------------------------------->|
 
 ```
+
+- Tokens
+
+![./images/tokens.png](./images/tokens.png)
+
+- Token Instrospection
+
+
+```text
+
+Token Introspection
+Token introspection is an OAuth 2.0 specification that defines a way for resource servers to query the authorization server to get metadata about a token.
+
+```
+
+- Non Opaque Token
+
+```text
+A non-opaque token like a JWT (JSON Web Token) contains structured information called claims inside it 
+
+- A JWT is composed of three parts, each base64url-encoded and separated by dot
+
+
+```
+
+```java
+HEADER.PAYLOAD.SIGNATURE
+```
+
+```bash
+
+HEADER
+    - alg
+    - type
+
+PAYLOAD (claims)
+    - iss (Issuer)
+    - sub (Subject)
+    - aud (Audience)
+    - exp (Expiration Time)
+    - nbf (Not Before)
+    - iat (Issued At)
+    - jti (JWT ID)
+
+SIGNATURE
+    - Created by signing the encoded header and payload with a secret or private key
+
+```
