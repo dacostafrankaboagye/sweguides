@@ -1,6 +1,10 @@
 # Spring Security Fundamentals 
 - by: Laur Spilca
 
+- [First Steps](#lesson-1---first-steps)
+- [Managing Users](#lesson-2---managing-users)
+- [Custom Authentication](#lesson-3---custom-authentication)
+- [Multiple Authentication Providers](#lesson-4---multiple-authentication-providers)
 
 ## Lesson 1 - First steps
 
@@ -236,7 +240,7 @@ basic auth
 
 
 ## Lesson 2 - Managing users
-- 
+
 - Spring security in a web application starts from the filters
 ```text
 
@@ -564,3 +568,37 @@ MyCustomAuthenticationProvider implements the AuthenticationProvider
 
 - we put the `my-cus-key` in the header
 ```
+
+
+## Lesson 4 - Multiple authentication providers
+- one custom filter, one default filter
+
+- ![./images/mutlipleFilters.png](./images/mutlipleFilters.png)
+- What we want to do in this lesson
+  - An application 
+    - allowing both httpbasic
+    - and APi key
+
+```text
+        return http
+                .httpBasic(
+                        Customizer.withDefaults()
+                )
+                .authenticationManager(
+
+                )  // when you want to override the auth manager
+                .authenticationProvider(
+
+                )  
+```
+
+
+##  Lesson 5 - Endpoint authorization - Part 1
+
+- Authorization
+  - Endpoint level * - discussion for this lesson
+    - for web apps
+    - applied through the filter chain
+  - Method level
+    - on any method - which is a bean
+    - its done through aspects
