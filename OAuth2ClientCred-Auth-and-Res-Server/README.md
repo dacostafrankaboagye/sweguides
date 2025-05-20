@@ -8,3 +8,12 @@
 ![./images/project-content-2.png](./images/project-content-2.png)
 
 ![./images/project-content-3.png](./images/project-content-3.png)
+
+
+## securing the endpoint
+![securing.png](images/securing.png)
+
+
+## In the project
+
+![./images/intheproject.png](./images/intheproject.png)
