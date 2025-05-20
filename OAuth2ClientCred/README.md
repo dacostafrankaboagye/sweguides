@@ -127,3 +127,6 @@ Clients can verify it using the public key, often exposed via the JWK Set URI (/
 
 
 ```
+
+## say you using a db
+![using db](./images/usingdb.png)
