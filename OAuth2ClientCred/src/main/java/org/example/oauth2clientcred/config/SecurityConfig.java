@@ -41,6 +41,15 @@ public class SecurityConfig {
                 .scope("read")
                 .build();
 
-        return new InMemoryRegisteredClientRepository(registeredClient);
+        RegisteredClient  registeredClient2 = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("frx290MMt2")
+                .clientName("frank-app-client2")
+                .clientSecret("{noop}frank-secret2")
+                .clientAuthenticationMethod(CLIENT_SECRET_POST)
+                .authorizationGrantType(CLIENT_CREDENTIALS)
+                .scope("write")
+                .build();
+
+        return new InMemoryRegisteredClientRepository(registeredClient, registeredClient2);
     }
 }

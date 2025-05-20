@@ -36,7 +36,7 @@ class SecurityConfigTest {
                 .andExpect(jsonPath("$.access_token").exists())
                 .andExpect(jsonPath("$.access_token").isString())
                 .andExpect(jsonPath("$.expires_in").exists())
-                .andExpect(jsonPath("$.expires_in").isNumber())
+                .andExpect(jsonPath("$.expires_in").isNumber())  // e.g. 299 sec
                 .andDo(
                         result -> System.out.println(result.getResponse().getContentAsString())
                 )
