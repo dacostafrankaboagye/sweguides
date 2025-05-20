@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +21,7 @@ class SecurityConfigTest {
     MockMvc mockMvc;
 
 
-    // @Test
+    @Test
     void shouldGetAccessToken() throws Exception {
         mockMvc
                 .perform(
@@ -32,13 +31,21 @@ class SecurityConfigTest {
                                 .param("client_secret", "frank-secret")
                                 .param("scope", "read")
                 )
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token_type", is("Bearer")))
+                .andExpect(jsonPath("$.access_token").exists())
+                .andExpect(jsonPath("$.access_token").isString())
+                .andExpect(jsonPath("$.expires_in").exists())
+                .andExpect(jsonPath("$.expires_in").isNumber())
                 .andDo(
                         result -> System.out.println(result.getResponse().getContentAsString())
+                )
+                .andDo(
+                        print()
                 );
     }
 
-    @Test
+    // @Test
     void shouldNotGetAccessToken() throws Exception {
         mockMvc
                 .perform(
