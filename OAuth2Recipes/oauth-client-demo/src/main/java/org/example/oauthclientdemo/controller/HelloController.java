@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    // for google only
+    // for google
     /*
     @GetMapping
     public String hello(@AuthenticationPrincipal OidcUser oidcUser) {
@@ -25,6 +25,6 @@ public class HelloController {
     public String hello(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return """
                 Hello %s\s
-                Thank you""".formatted(oAuth2User.getAttributes());
+                Thank you""".formatted(oAuth2User.getName());  // the id will be here
     }
 }
