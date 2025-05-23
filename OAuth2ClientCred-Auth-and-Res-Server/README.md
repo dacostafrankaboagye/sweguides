@@ -17,3 +17,19 @@
 ## In the project
 
 ![./images/intheproject.png](./images/intheproject.png)
+
+
+## Understand this
+
+![./images/understandthis-1.png](./images/understandthis-1.png)
+
+![./images/understandthis-2.png](./images/understandthis-2.png)
+
+
+## code test get access token fail
+
+### Get Access Token - Know this
+
+![./images/getaccesstokenknowthis.png](./images/getaccesstokenknowthis.png)
+
+
