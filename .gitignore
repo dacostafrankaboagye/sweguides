@@ -28,7 +28,7 @@ Thumbs.db
 
 .env
 
-/OpenIDConnect/
+
 /incom_OpenIDConnect/
 /secrets
 /secrets/**

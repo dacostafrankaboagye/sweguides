@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: openidconnect
+  config:
+    import: optional:file:secrets/.env[.properties]
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${google-client-id}
+            client-secret: ${google-client-secret}
+            scope: openid,profile,email
+server:
+  port: 8081
