@@ -34,3 +34,4 @@ Thumbs.db
 /secrets/**
 
 .client_secret.json
+securingapiwithoauth2/secrets/
