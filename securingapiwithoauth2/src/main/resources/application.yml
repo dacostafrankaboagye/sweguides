@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: securingapiwithoauth2
+  config:
+    import: optional:file:secrets/.env[.properties]  # This tells Spring to look for and load the file at secrets/.env and treat it as a .properties-style file.
+  # oauth2 - google
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${google-client-id}
+            client-secret: ${google-client-secret}
+            scope:
+              - profile  # Allows access to the user's basic profile information (name, picture) [https://www.googleapis.com/auth/userinfo.profile]
+              - email  # Allows access to the user's email address. [https://www.googleapis.com/auth/userinfo.email]
+              - openid  # Required for OpenID Connect
+            authorization-grant-type: authorization_code  # Specifies the authorization grant type for the OAuth 2.0 flow
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"  #  Spring resolves it http://localhost:8080/login/oauth2/code/google # Specifies the URI where the authorization server will redirect the user after successful authorization
+            client-name: Google  # Specifies the name of the client application
+        provider:
+          google: #  client-side login flows
+            authorization-uri: https://accounts.google.com/o/oauth2/auth  # endpoint where the user is redirected to for authorization
+            token-uri: https://oauth2.googleapis.com/token  # endpoint to exchange the authorization code for an access token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo  # endpoint to retrieve user details using the access token
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs  # endpoint to retrieve the JSON Web Key Set (JWKS) for verifying signed tokens
+            user-name-attribute: name #or sub, # Specifies which attribute from the user info endpoint response should be used as the principal's name
+
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com  # Specifies the issuer of the JWT tokens
+server:
+  port: 8081
+
+# unless you need custom endpoints, you can avoid declaring provider.my-google
+#    google:
+#      client-id: ${GOOGLE_ID}
+#      client-secret: ${GOOGLE_SECRET}
+#      scope: openid, profile, email
