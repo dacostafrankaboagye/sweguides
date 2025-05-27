@@ -31,3 +31,6 @@ Thumbs.db
 /OpenIDConnect/
 /incom_OpenIDConnect/
 /secrets
+/secrets/**
+
+.client_secret.json
