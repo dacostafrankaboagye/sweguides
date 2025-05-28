@@ -25,6 +25,6 @@ public class HelloController {
     public String hello(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return """
                 Hello %s\s
-                Thank you""".formatted(oAuth2User.getName());  // the id will be here
+                Thank you""".formatted(oAuth2User.getName());  // the id, sub, ->depending on how it is configured
     }
 }

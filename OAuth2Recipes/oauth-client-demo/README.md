@@ -524,5 +524,79 @@ e.g https://accounts.google.com/.well-known/openid-configuration
   - refer to the `Auth Sever Demo Project`
 
 
+# Continue after Auth Sever Demo Project
+
+---
+
+- this continues from the auth-server-demo
+
+- so we just add this
+
+```yaml
+my-inhouse-authourization-server:
+  issuer-uri: http://localhost:9000
+  user-name-attribute: sub
+
+# then register
+    my-inhouse-authourization-server: # since its the same name, I dont have to bring the provider
+      client-id: ${in-house-client-id}
+      scope:
+        - openid
+        - profile
+      redirect-uri: http://127.0.0.1:8081/login/oauth2/code/x-pcke-client-x
+      client-authentication-method: none
+      authorization-grant-type: authorization_code
+      client-name: my-inhouse-authourization-server
+
+```
+
+- Note
+  - spring strictly follows the openid and oauth2 configurations and
+  - recommendations such that, we only need the issuer-uri
+  - and it will use its `.well-known/openid-configuration`
+    - to configure the rest
+    - so we dont have to explicitly list the
+```text
+            authorization-uri
+            token-uri
+            user-info-uri
+```
+
+- then we run it
+
+```text
+127.0.0.1:8081
+
+// remember why we're using the 127.0.0.1 
+instead of the localhost
+> the authorization server is running on localhost:9000
+
+// and there will be two cookie session based on the domains
+
+```
+
+- see it is available
+- note that the authorization server is also running
+
+![./images/inhousefauthflow-1.png](./images/inhousefauthflow-1.png)
+
+- then it redirects me
+
+![./images/redirection.png](./images/redirection.png)
+
+- we know the user 
+  - check the auth server demo (application.yml)
+```text
+    user:
+      name: kb@scale.com
+      password: uia889nf
+
+```
+![./images/loggedin.png](./images/loggedin.png)
+
+- then we are redirected agian to the spring boot app.
+
+![./images/redirectedagain.png](./images/redirectedagain.png)
+
 
 

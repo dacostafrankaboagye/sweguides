@@ -12,6 +12,9 @@ spring:
             user-info-uri: https://api.github.com/user
             user-name-attribute: id
 #            user-name-attribute: login
+          my-inhouse-authourization-server:
+            issuer-uri: http://localhost:9000
+            user-name-attribute: sub
         registration:
           complete-github-registration:
             provider: my-github
@@ -23,6 +26,18 @@ spring:
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             client-name: complete github client registration
+          my-inhouse-authourization-server: # since its the same name, I dont have to bring the provider
+            client-id: ${in-house-client-id}
+            scope:
+              - openid
+              - profile
+            redirect-uri: http://127.0.0.1:8081/login/oauth2/code/x-pcke-client-x
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            client-name: my-inhouse-authourization-server
+
+
+
 
 
 

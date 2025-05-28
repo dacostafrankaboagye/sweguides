@@ -9,9 +9,9 @@ spring:
   application:
     name: auth-server-demo
   security:
-#    user:
-#      name: user
-#      password: password
+    user:
+      name: kb@scale.com
+      password: uia889nf
     oauth2:
       authorizationserver:
         client:
@@ -19,15 +19,13 @@ spring:
             registration:
               client-id: "x-pcke-client-x"
               client-authentication-methods:
-                - "client_secret_basic"
+                - "none"
               authorization-grant-types:
                 - "authorization_code"
-                - "refresh_token"
               redirect-uris:
-                - "http://127.0.0.1:8081/login/oauth2/code/oidc-client"
-              post-logout-redirect-uris:
-                - "http://127.0.0.1:8081/"
+                - "http://127.0.0.1:8081/login/oauth2/code/x-pcke-client-x"
               scopes:
                 - "openid"
                 - "profile"
             require-authorization-consent: true
+            require-proof-key: true
