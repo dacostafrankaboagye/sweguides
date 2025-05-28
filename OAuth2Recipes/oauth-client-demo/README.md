@@ -2,6 +2,10 @@
   - [https://docs.spring.io/spring-security/reference/servlet/oauth2/login/index.html](https://docs.spring.io/spring-security/reference/servlet/oauth2/login/index.html)
 
 ## Using Google
+
+- the flow
+![./images/googleasauthorizationserver.png](./images/googleasauthorizationserver.png)
+
 - set the logging
 ```yml
 logging:
@@ -87,6 +91,10 @@ Will secure any request with filters:
 ![./images/consent.png](./images/consent.png)
 
 ## Using Github
+
+- the flow
+![./images/githubasauthorisationserver.png](./images/githubasauthorisationserver.png)
+
 - create a new oauth app in the developer settings of github
 ```yml
 spring:
@@ -471,6 +479,49 @@ HttpSessionSecurityContextRepository.java
       - success response
 
 ![./images/succRes.png](./images/succRes.png)
+
+
+---
+
+## Spring Security OAuth2 Login (JWT) with Google (OpenId Connect Flow) - Complete Configuration
+![](./images/googleasauthorizationserver.png)
+
+- with the JWKs URI
+  - the JWKs URI (JSON Web Key Set URI) plays a very important role in verifying that the JWT (ID token) from Google is genuine and hasn't been tampered with
+
+```text
+When you configure a spring.security.oauth2.client and Spring detects it's an OpenID Connect provider (like Google), it automatically fetches:
+
+.well-known/openid-configuration (which includes the jwks_uri)
+
+Then uses the jwks_uri to download the keys
+
+OpenID Connect Discovery Document
+e.g https://accounts.google.com/.well-known/openid-configuration
+```
+---
+
+## Spring Security OAuth2 Login (JWT) x Spring Authorization Server x Proof Key for Code Exchange(PKCE)
+
+- Types of OAuth2 Flows (Grant Types)
+
+| Grant Type                    | When to Use                           | Description                                                |
+| ----------------------------- | ------------------------------------- | ---------------------------------------------------------- |
+| **Authorization Code**        | Web apps with backends                | Uses browser redirect flow, with code exchanged for tokens |
+| **Authorization Code + PKCE** | SPAs or mobile apps                   | Safer version of above, for public clients                 |
+| **Client Credentials**        | Server-to-server                      | No user involved, just apps talking                        |
+| **Password (deprecated)**     | Internal apps only                    | User provides username & password directly                 |
+| **Refresh Token**             | Get new access token without re-login | Sent with `refresh_token` grant                            |
+
+
+![./images/pkce.png](./images/pkce.png)
+
+
+---
+
+## Simple Project
+- An auth server that will support open id  + PKCE
+  - refer to the `Auth Sever Demo Project`
 
 
 

@@ -36,3 +36,4 @@ Thumbs.db
 .client_secret.json
 securingapiwithoauth2/secrets/
 openidconnect/secrets/
+auth-server-demo/secrets/
