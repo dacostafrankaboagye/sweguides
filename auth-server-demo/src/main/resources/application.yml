@@ -1,0 +1,33 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: auth-server-demo
+  security:
+#    user:
+#      name: user
+#      password: password
+    oauth2:
+      authorizationserver:
+        client:
+          frank-client-app:  ## the name of the client app
+            registration:
+              client-id: "x-pcke-client-x"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "refresh_token"
+              redirect-uris:
+                - "http://127.0.0.1:8081/login/oauth2/code/oidc-client"
+              post-logout-redirect-uris:
+                - "http://127.0.0.1:8081/"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: true
